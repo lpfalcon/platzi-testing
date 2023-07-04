@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: .api/package-lock.json #ESTE PASO NO S NECESARIO SI NO SE POSEE UN MONOREPOSITORIO
+          cache-dependency-path: ./api/package-lock.json #ESTE PASO NO S NECESARIO SI NO SE POSEE UN MONOREPOSITORIO
       - name: install
         shell: bash
         run: npm ci   #CI INSTALA LAS DEPENDENCIAS EN UN ENTORNO DE INTEGRACIÓN CONTINUA
