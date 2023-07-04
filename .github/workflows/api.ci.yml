@@ -14,7 +14,7 @@ jobs:
   unit-test: # RUN UNIT TEST
     runs-on: ubuntu-latest #creación de máquina remota
     steps:
-      - name: Checkout #gitHub realiza la clonación de nuestro repositorio en la máquina específica en la que se este trabajando
+      - name: Checkout # gitHub realiza la clonación de nuestro repositorio en la máquina específica en la que se este trabajando
         uses: actions/checkout@v2
       - name: Setup Nodejs
         uses: actions/setup-node@v2
@@ -29,13 +29,13 @@ jobs:
         shell: bash
         run: npm run test
 
-  run-linters: #RUN LINTERS
+  run-linters: # RUN LINTERS - STATIC TESTS
     runs-on: ubuntu-latest #creación de máquina remota
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
       - name: Set up Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: 18
           cache: "npm"
@@ -46,4 +46,29 @@ jobs:
         run: npm ci
       - name: Run linters
         shell: bash
-        run: npm run lint --silent
+        run: npm run lint
+
+  run-e2e: # RUN E2E TESTS
+    runs-on: ubuntu-latest
+    container:
+      image: node:18
+    services:
+      mongo-e2e:
+        image: mongo:4.4
+        ports:
+          - '27017:27017'
+        env:
+          MONGO_INITDB_ROOT_USERNAME: test
+          MONGO_INITDB_ROOT_PASSWORD: test123
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Install Node.js dependencies
+        shell: bash
+        run: npm ci
+      - name: run unit e2e-test
+        shell: bash
+        run: npm run test:e2e
+        env:
+          MONGO_DB_NAME: demo
+          MONGO_URL: mongodb://test:test123@mongo-e2e:27017?retryWrites=true&writeConcern=majority
