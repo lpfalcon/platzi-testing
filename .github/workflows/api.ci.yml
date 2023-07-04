@@ -38,8 +38,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 18
+          cache: "npm"
+          cache-dependency-path: ./api/package-lock.json #ESTE PASO NO S NECESARIO SI NO SE POSEE UN MONOREPOSITORIO
         # ESLint and Prettier must be in `package.json`
       - name: Install Node.js dependencies
+        shell: bash
         run: npm ci
       - name: Run linters
         uses: wearerequired/lint-action@v2
