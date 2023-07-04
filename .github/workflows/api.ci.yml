@@ -19,7 +19,7 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: 18
           cache: 'npm'
           cache-dependency-path: .api/package-lock.json #ESTE PASO NO S NECESARIO SI NO SE POSEE UN MONOREPOSITORIO
       - name: install
