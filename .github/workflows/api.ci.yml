@@ -1,6 +1,6 @@
 name: API CI
 # on: [push]  -> PARA REPOSITORIOS SENCILLOS, NO MONOREPOSITORIOS
-on:    # EL ON Y EL DEFAULT LO PUEDO IGNORAR SI MI REPOSITORIO NO ES MONO-REPOSITORIO
+on: # EL ON Y EL DEFAULT LO PUEDO IGNORAR SI MI REPOSITORIO NO ES MONO-REPOSITORIO
   push:
     paths:
       - "./api/**"
@@ -11,23 +11,38 @@ defaults:
     working-directory: ./api
 
 jobs:
-  unit-test:
+  unit-test: # RUN UNIT TEST
     runs-on: ubuntu-latest #creación de máquina remota
     steps:
-      - name: Checkout          #gitHub realiza la clonación de nuestro repositorio en la máquina específica en la que se este trabajando
+      - name: Checkout #gitHub realiza la clonación de nuestro repositorio en la máquina específica en la que se este trabajando
         uses: actions/checkout@v2
       - name: Setup Nodejs
         uses: actions/setup-node@v2
         with:
           node-version: 18
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: ./api/package-lock.json #ESTE PASO NO S NECESARIO SI NO SE POSEE UN MONOREPOSITORIO
-      - name: install
+      - name: Install Node.js dependencies
         shell: bash
-        run: npm ci   #CI INSTALA LAS DEPENDENCIAS EN UN ENTORNO DE INTEGRACIÓN CONTINUA
+        run: npm ci #CI INSTALA LAS DEPENDENCIAS EN UN ENTORNO DE INTEGRACIÓN CONTINUA
       - name: run unit unit-test
         shell: bash
         run: npm run test
 
-
-
+  run-linters: #RUN LINTERS
+    runs-on: ubuntu-latest #creación de máquina remota
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+        # ESLint and Prettier must be in `package.json`
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          eslint: true
+          prettier: true
